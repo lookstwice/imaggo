@@ -1,7 +1,7 @@
 from os import environ
 
 from imaggo.common.images_client import ImagesClient
-from imaggo.common.utilities import Utilities
+from imaggo.common.utils import Utilities
 
 
 class TestImages:

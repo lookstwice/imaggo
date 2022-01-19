@@ -4,9 +4,8 @@ import os
 
 import requests
 from flask import jsonify
-from werkzeug.exceptions import abort
 
-from common.utilities import Utilities
+from common.utils import Utilities
 from db import Image, Object, db
 
 IMAGGA_TAGS_ENDPOINT = "https://api.imagga.com/v2/tags"

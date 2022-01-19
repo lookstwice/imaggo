@@ -29,11 +29,10 @@ api = Api(app, version='1.0', title='Imaggo API',
                        f' object detection, and returns the enhanced'
                        f' content.'),)
 
-ns = api.namespace('Images', description='Image Operations')
-
 
 @api.route('/images', methods=['GET', 'POST'])
 class Images(Resource):
+    @api.doc(responses={200: 'Success', 400: 'Bad Request'})
     def post(self):
         handler = Request_Handler()
         request_body = request.get_json()
@@ -48,6 +47,8 @@ class Images(Resource):
             abort(400, (f"provide 'image_data' or 'image_url' in the json "
                         "body of the request"))
 
+    @api.param("objects", "obj1,obj2,obj3", _in="query")
+    @api.doc(responses={200: 'Success'})
     def get(self):
         handler = Request_Handler()
         if request.args:
@@ -59,8 +60,9 @@ class Images(Resource):
 
 
 @api.route('/images/<imageId>', methods=['GET'])
-@api.param("imageId", "image identifier")
 class ImagesByID(Resource):
+    @api.param("imageId", "image identifier", type=int)
+    @api.doc(responses={200: 'Success'})
     def get(self, imageId):
         handler = Request_Handler()
         response = handler.get_images(id=imageId)

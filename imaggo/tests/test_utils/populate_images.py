@@ -2,47 +2,48 @@
 import os
 import sys
 
-from images_client import ImagesClient
-from utilities import Utilities
+from imaggo.common.images_client import ImagesClient
+from imaggo.common.utils import Utilities
 
 if __name__ == '__main__':
-    payload_path = ""
-    file_name = ""
+    temp_entry = None
 
     dc = ImagesClient()
     Utilities.check_server(dc)
 
     if len(sys.argv) != 2:
-        print("missing file path")
+        print("missing image directory")
         sys.exit(1)
     else:
-        payload_path = sys.argv[1]
+        image_dir = sys.argv[1]
 
-    if not os.path.isfile(payload_path):
-        print(f'{payload_path} does not exist')
+    if not os.path.isdir(image_dir):
+        print(f'{image_dir} does not exist')
         sys.exit(1)
     else:
-        file_name = os.path.basename(payload_path)
+        dir = os.scandir(image_dir)
+        for dir_entry in dir:
+            temp_entry = dir_entry
 
+            # with label and detection enabled
+            payload = {"label": dir_entry.name,
+                    "detection_flag": "True"}
+            response = dc.detect_objs(request_body=payload,
+                                    file_path=dir_entry.path)
+            print(response.status_code)
+            print(response.json())
+    
     # without label and detection disabled
     payload = {"detection_flag": "False"}
     response = dc.detect_objs(request_body=payload,
-                              file_path=payload_path)
+                              file_path=temp_entry.path)
     print(response.status_code)
     print(response.json())
 
     # without label and detection enabled
     payload = {"detection_flag": "True"}
     response = dc.detect_objs(request_body=payload,
-                              file_path=payload_path)
-    print(response.status_code)
-    print(response.json())
-
-    # with label and detection enabled
-    payload = {"label": file_name,
-               "detection_flag": "True"}
-    response = dc.detect_objs(request_body=payload,
-                              file_path=payload_path)
+                              file_path=temp_entry.path)
     print(response.status_code)
     print(response.json())
 
@@ -64,7 +65,8 @@ if __name__ == '__main__':
 
     # with label and detection enabled
     url = "https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg"
-    payload = {"label": "wind-farm-538576_640.jpg",
+    label = url.split("/")[-1]
+    payload = {"label": label,
                "image_url": url,
                "detection_flag": "True"}
     response = dc.detect_objs(request_body=payload)

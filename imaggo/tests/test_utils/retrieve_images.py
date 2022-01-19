@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from images_client import ImagesClient
-from utilities import Utilities
+from imaggo.common.images_client import ImagesClient
+from imaggo.common.utils import Utilities
 
 if __name__ == '__main__':
     dc = ImagesClient()

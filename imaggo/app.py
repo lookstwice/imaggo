@@ -1,3 +1,4 @@
+from email.policy import default
 import os
 
 from flask import Flask, request
@@ -61,7 +62,7 @@ class Images(Resource):
 
 @api.route('/images/<imageId>', methods=['GET'])
 class ImagesByID(Resource):
-    @api.param("imageId", "image identifier", type=int)
+    @api.param("imageId", "image identifier", type=int, _in="path")
     @api.doc(responses={200: 'Success'})
     def get(self, imageId):
         handler = Request_Handler()

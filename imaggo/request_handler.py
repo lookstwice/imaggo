@@ -49,14 +49,15 @@ class Request_Handler():
 
         image = self.insert_image(db, label=label, data=image_data)
 
-        if request_body.get('detection_flag') == "True":
+        detection_flag = request_body.get('detection_flag')
+        if detection_flag:
+            if detection_flag.upper() == "TRUE":
+                response = requests.post(
+                    IMAGGA_TAGS_ENDPOINT,
+                    auth=(API_KEY, API_SECRET),
+                    data={'image': base64.b64decode(image_data.encode())})
 
-            response = requests.post(
-                IMAGGA_TAGS_ENDPOINT,
-                auth=(API_KEY, API_SECRET),
-                data={'image': base64.b64decode(image_data.encode())})
-
-            self.insert_tags(image, response)
+                self.insert_tags(image, response)
 
         return jsonify(image=image.to_dict())
 
@@ -65,13 +66,15 @@ class Request_Handler():
 
         image = self.insert_image(db, label=label)
 
-        if request_body.get('detection_flag') == "True":
-            image_url = request_body.get("image_url")
-            response = requests.get(
-                f'{IMAGGA_TAGS_ENDPOINT}?image_url={image_url}',
-                auth=(API_KEY, API_SECRET))
+        detection_flag = request_body.get('detection_flag')
+        if detection_flag:
+            if detection_flag.upper() == "TRUE":
+                image_url = request_body.get("image_url")
+                response = requests.get(
+                    f'{IMAGGA_TAGS_ENDPOINT}?image_url={image_url}',
+                    auth=(API_KEY, API_SECRET))
 
-            self.insert_tags(image, response)
+                self.insert_tags(image, response)
 
         return jsonify(image=image.to_dict())
 

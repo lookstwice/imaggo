@@ -34,9 +34,9 @@ class TestImages:
         assert(response.ok)
 
     def test_detect_objs_by_url(self):
-        url = (f'https://imagga.com/static/images/tagging/wind-farm-538576_'
-               f'640.jpg')
-        payload = {"label": "robot.jpg",
+        url = (f'https://www.publicdomainpictures.net/en/view-image.php?'
+               f'image=356071&picture=dog-under-table')
+        payload = {"label": "dog-under-table",
                    "image_path": "",
                    "image_url": url,
                    "detection_flag": "True"}

@@ -1,8 +1,9 @@
+from doctest import Example
 from email.policy import default
 import os
 
 from flask import Flask, request
-from flask_restx import Api, Resource
+from flask_restx import Api, Resource, fields
 from werkzeug.exceptions import abort
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -30,9 +31,23 @@ api = Api(app, version='1.0', title='Imaggo API',
                        f' object detection, and returns the enhanced'
                        f' content.'),)
 
+example_url = (f'https://www.publicdomainpictures.net/en/view-image.php?'
+               f'image=356071&picture=dog-under-table')
+request_model = api.model('POST', {
+    'label': fields.String(title="label", description='image label',
+                           example="example.jpg", required=False),
+    'data': fields.String(title="data", description='image data',
+                          required=False),
+    'image_url': fields.Url(title="image url", example=example_url,
+                            required=False),
+    'detection_flag': fields.String(title="detection flag", example="True",
+                                    required=False),
+})
+
 
 @api.route('/images', methods=['GET', 'POST'])
 class Images(Resource):
+    @api.doc(model=request_model)
     @api.doc(responses={200: 'Success', 400: 'Bad Request'})
     def post(self):
         handler = Request_Handler()

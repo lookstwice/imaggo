@@ -27,12 +27,12 @@ if __name__ == '__main__':
 
             # with label and detection enabled
             payload = {"label": dir_entry.name,
-                    "detection_flag": "True"}
+                       "detection_flag": "True"}
             response = dc.detect_objs(request_body=payload,
-                                    file_path=dir_entry.path)
+                                      file_path=dir_entry.path)
             print(response.status_code)
             print(response.json())
-    
+
     # without label and detection disabled
     payload = {"detection_flag": "False"}
     response = dc.detect_objs(request_body=payload,
@@ -64,8 +64,9 @@ if __name__ == '__main__':
     print(response.json())
 
     # with label and detection enabled
-    url = "https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg"
-    label = url.split("/")[-1]
+    url = (f'https://www.publicdomainpictures.net/en/view-image.php?'
+           f'image=384460&picture=tank-amx-30')
+    label = url.split("picture=")[-1]
     payload = {"label": label,
                "image_url": url,
                "detection_flag": "True"}

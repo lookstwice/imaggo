@@ -49,7 +49,7 @@ request_model = api.model('POST', {
                                     required=False),
 })
 
-    
+
 @api.route('/images', methods=['GET', 'POST'])
 class Images(Resource):
     @api.expect(request_model)
@@ -73,7 +73,7 @@ class Images(Resource):
                             "body of the request"))
         else:
             abort(400, f'json request body: {request_body}')
-            
+
     @api.param("objects", "obj1,obj2,obj3", _in="query")
     @api.doc(responses={200: 'Success'})
     def get(self):

@@ -34,8 +34,8 @@ api = Api(app, version='1.0', title='Imaggo API',
                        f' object detection, and returns the enhanced'
                        f' content.'),)
 
-example_url = (f'https://www.publicdomainpictures.net/en/view-image.php?'
-               f'image=356071&picture=dog-under-table')
+example_url = (f'https://imagga.com/static/images/tagging/'
+               f'wind-farm-538576_640.jpg')
 example_data = base64_encode("TEST_DATA").decode("utf-8")
 
 request_model = api.model('POST', {
@@ -49,15 +49,10 @@ request_model = api.model('POST', {
                                     required=False),
 })
 
-class ImageSample(fields.Raw):
-    def format(self, value):
-        return {'label': value.label, 
-                'date': value.data, 
-                'detection_flag': value.detection_flag}
     
 @api.route('/images', methods=['GET', 'POST'])
 class Images(Resource):
-    @api.doc(model=request_model, body=ImageSample)
+    @api.expect(request_model)
     @api.doc(responses={200: 'Success', 400: 'Bad Request'})
     def post(self):
         handler = Request_Handler()
@@ -66,12 +61,12 @@ class Images(Resource):
         if request_body:
             image_data = request_body.get('data')
             image_url = request_body.get("image_url")
-            
-            if image_data:
-                response = handler.detect_objs(request_body)
-                return response
-            elif image_url:
+
+            if image_url:
                 response = handler.detect_objs_by_url(request_body)
+                return response
+            elif image_data:
+                response = handler.detect_objs(request_body)
                 return response
             else:
                 abort(400, (f"provide 'image_data' or 'image_url' in the json "

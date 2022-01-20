@@ -1,5 +1,6 @@
 from doctest import Example
 from email.policy import default
+import base64
 import os
 
 from flask import Flask, request
@@ -33,6 +34,7 @@ api = Api(app, version='1.0', title='Imaggo API',
 
 example_url = (f'https://www.publicdomainpictures.net/en/view-image.php?'
                f'image=356071&picture=dog-under-table')
+example_data = base64.b64decode("TEST_DATA".encode())
 request_model = api.model('POST', {
     'label': fields.String(title="label", description='image label',
                            example="example.jpg", required=False),

@@ -49,10 +49,15 @@ request_model = api.model('POST', {
                                     required=False),
 })
 
-
+class ImageSample(fields.Raw):
+    def format(self, value):
+        return {'label': value.label, 
+                'date': value.data, 
+                'detection_flag': value.detection_flag}
+    
 @api.route('/images', methods=['GET', 'POST'])
 class Images(Resource):
-    @api.doc(model=request_model)
+    @api.doc(model=request_model, body=ImageSample)
     @api.doc(responses={200: 'Success', 400: 'Bad Request'})
     def post(self):
         handler = Request_Handler()
